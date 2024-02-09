@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Hub</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body class="sales">
+    <div class="popup confirm hidden">
+        <p>Confirm Order?</p>
+        <div class="buttons">
+            <button class="cancel">Cancel</button>
+            <button class="confirm">Confirm</button>
+        </div>
+    </div>
+    <div class="overlay hidden"></div>
+
+    <header>
+        <p class="title">Coffee Hub</p>
+        <nav>
+            <p class="sales active">Sales</p>
+            <p class="expenses">Expenses</p>
+        </nav>
+    </header>
+    <main>
+        <section id="menu">
+            <div class="card sales">
+                <div class="text">
+                    <p class="item">Coffee</p>
+                    <p class="price">30,000LL</p>
+                </div>
+                <div class="icon">
+                    <img src="./assets/coffee-beans.png" alt="">
+                </div>
+                <div class="qty">
+                    <button class="minus"></button>
+                    <p class="num">0</p>
+                    <button class="plus"></button>
+                </div>
+            </div>
+            <div class="card sales">
+                <div class="text">
+                    <p class="item">American</p>
+                    <p class="price">60,000LL</p>
+                </div>
+                <div class="icon">
+                    <img src="./assets/americano.png" alt="">
+                </div>
+                <div class="qty">
+                    <button class="minus"></button>
+                    <p class="num">0</p>
+                    <button class="plus"></button>
+                </div>
+            </div>
+            <div class="card sales">
+                <div class="text">
+                    <p class="item">Tea</p>
+                    <p class="price">30,000LL</p>
+                </div>
+                <div class="icon">
+                    <img src="./assets/tea-bag.png" alt="">
+                </div>
+                <div class="qty">
+                    <button class="minus"></button>
+                    <p class="num">0</p>
+                    <button class="plus"></button>
+                </div>
+            </div>
+            <div class="card sales">
+                <div class="text">
+                    <p class="item">Nescafe</p>
+                    <p class="price">50,000LL</p>
+                </div>
+                <div class="icon">
+                    <img src="./assets/nescafe.png" alt="" id="nescafe">
+                </div>
+                <div class="qty">
+                    <button class="minus"></button>
+                    <p class="num">0</p>
+                    <button class="plus"></button>
+                </div>
+            </div>
+            <div class="card sales">
+                <div class="text">
+                    <p class="item">Latte</p>
+                    <p class="price">100,000LL</p>
+                </div>
+                <div class="icon">
+                    <img src="./assets/latte.png" alt="">
+                </div>
+                <div class="qty">
+                    <button class="minus"></button>
+                    <p class="num">0</p>
+                    <button class="plus"></button>
+                </div>
+            </div>
+            <div class="card sales">
+                <div class="text">
+                    <p class="item">Hot Chocolate</p>
+                    <p class="price">150,000LL</p>
+                </div>
+                <div class="icon">
+                    <img src="./assets/hot-chocolate.png" alt="">
+                </div>
+                <div class="qty">
+                    <button class="minus"></button>
+                    <p class="num">0</p>
+                    <button class="plus"></button>
+                </div>
+            </div>
+            <div class="card sales">
+                <div class="text">
+                    <p class="item">Mocha</p>
+                    <p class="price">150,000LL</p>
+                </div>
+                <div class="icon">
+                    <img src="./assets/mocha.png" alt="">
+                </div>
+                <div class="qty">
+                    <button class="minus"></button>
+                    <p class="num">0</p>
+                    <button class="plus"></button>
+                </div>
+            </div>
+            <div class="card sales">
+                <div class="text">
+                    <p class="item">Ice Tea</p>
+                    <p class="price">100,000LL</p>
+                </div>
+                <div class="icon">
+                    <img src="./assets/ice-tea.png" alt="">
+                </div>
+                <div class="qty">
+                    <button class="minus"></button>
+                    <p class="num">0</p>
+                    <button class="plus"></button>
+                </div>
+            </div>
+            <div class="card sales">
+                <div class="text">
+                    <p class="item">Ice Mocha</p>
+                    <p class="price">150,000LL</p>
+                </div>
+                <div class="icon">
+                    <img src="./assets/iced-mocha.png" alt="">
+                </div>
+                <div class="qty">
+                    <button class="minus"></button>
+                    <p class="num">0</p>
+                    <button class="plus"></button>
+                </div>
+            </div>
+            <div class="card sales">
+                <div class="text">
+                    <p class="item">Smoothie</p>
+                    <p class="price">150,000LL</p>
+                </div>
+                <div class="icon">
+                    <img src="./assets/fruit-juice.png" alt="">
+                </div>
+                <div class="qty">
+                    <button class="minus"></button>
+                    <p class="num">0</p>
+                    <button class="plus"></button>
+                </div>
+            </div>
+            <div class="card sales">
+                <div class="text">
+                    <p class="item">Ice Latte</p>
+                    <p class="price">150,000LL</p>
+                </div>
+                <div class="icon">
+                    <img src="./assets/iced-coffee.png" alt="">
+                </div>
+                <div class="qty">
+                    <button class="minus"></button>
+                    <p class="num">0</p>
+                    <button class="plus"></button>
+                </div>
+            </div>
+            <div class="sales clearOrder">
+                <p>Clear Order</p>
+            </div>
+            <!-- expenses -->
+            <div class="card expenses">
+                <div class="text">
+                    <p class="item">Coffee Beans</p>
+                    <p class="price">300,000LL</p>
+                </div>
+                <div class="qty">
+                    <button class="minus"></button>
+                    <p class="num">0</p>
+                    <button class="plus"></button>
+                </div>
+            </div>
+            <div class="card expenses">
+                <div class="text">
+                    <p class="item">Nescafe</p>
+                    <p class="price">20,000LL</p>
+                </div>
+                <div class="qty">
+                    <button class="minus"></button>
+                    <p class="num">0</p>
+                    <button class="plus"></button>
+                </div>
+            </div>
+            <div class="card expenses">
+                <div class="text">
+                    <p class="item">Milk</p>
+                    <p class="price">100,000LL</p>
+                </div>
+                <div class="qty">
+                    <button class="minus"></button>
+                    <p class="num">0</p>
+                    <button class="plus"></button>
+                </div>
+            </div>
+            <div class="card expenses">
+                <div class="text">
+                    <p class="item">Water</p>
+                    <p class="price">30,000LL</p>
+                </div>
+                <div class="qty">
+                    <button class="minus"></button>
+                    <p class="num">0</p>
+                    <button class="plus"></button>
+                </div>
+            </div>
+            <div class="card expenses">
+                <div class="text">
+                    <p class="item">Tea Bags</p>
+                    <p class="price">70,000LL</p>
+                </div>
+                <div class="qty">
+                    <button class="minus"></button>
+                    <p class="num">0</p>
+                    <button class="plus"></button>
+                </div>
+            </div>
+            <div class="card expenses">
+                <div class="text">
+                    <p class="item">Cups</p>
+                    <p class="price">200,000LL</p>
+                </div>
+                <div class="qty">
+                    <button class="minus"></button>
+                    <p class="num">0</p>
+                    <button class="plus"></button>
+                </div>
+            </div>
+            <div class="card expenses">
+                <div class="text">
+                    <p class="item">Fruits</p>
+                    <p class="price">80,000LL</p>
+                </div>
+                <div class="qty">
+                    <button class="minus"></button>
+                    <p class="num">0</p>
+                    <button class="plus"></button>
+                </div>
+            </div>
+            
+            <div class="expenses clearOrder">
+                <p>Clear Order</p>
+            </div>
+        </section>
+        <section id="sidebar">
+            <div class="wrapper">
+                <div class="items"></div>
+                <div class="total">
+                    <p class="text">Total</p>
+                    <p class="price">0LL</p>
+                </div>
+            </div>
+            <button class="order">Place Order</button>
+        </section>
+    </main>
+</body>
+<script src="./script.js"></script>
+</html>
