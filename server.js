@@ -18,19 +18,17 @@ app.use(express.static('public'));
 app.use(express.json())
 app.use(cors())
 app.post('/addSale', (req, res) => {
-  console.log('received salses post request')
-  editRanges()
-  const data = req.body;
-  addSale(formatDate(), data.item , data.price, data.qty)
+  console.log('received sale')
+  addSale(formatDate(), req.body.item , req.body.price, req.body.qty)
   
   res.json({ message: 'Data received successfully' });
+  console.log('sale added')
 })
 app.post('/addExpense', (req, res) => {
-  console.log('received expenses post request')
-  editRanges()
-  const data = req.body;
-  addExpense(formatDate(), data.item , data.price, data.qty)
+  console.log('received expense')
+  addExpense(formatDate(), req.body.item , req.body.price, req.body.qty)
   res.json({ message: 'Data received successfully' });
+  console.log('added expense')
 })
 
 app.get('*', (req, res) => {
@@ -77,8 +75,7 @@ function addSale(date, item, price, qty){
     workSheet['B' + rowNb] = { t:'s', v: `${item}`, r: `<t>${item}</t>`, h: `${item}`, w: `${item}` };
     workSheet['C' + rowNb] = { t:'n', v: price, w: `${price}`};
     workSheet['D' + rowNb] = { t:'n', v: qty, w: `${qty}` };
-    // workSheet['E' + rowNb] = { t:'n', v: price*qty, w: `${price*qty}` };
-
+    workSheet['E' + rowNb] = { t:'n', v: price*qty, w: `${price*qty}` };
 
     //update xlsx file
     workBook.Sheets[currentMonth] = workSheet
@@ -116,7 +113,7 @@ function addExpense(date, item, price, qty){
     workSheet['H' + rowNb] = { t:'s', v: `${item}`, r: `<t>${item}</t>`, h: `${item}`, w: `${item}` };
     workSheet['I' + rowNb] = { t:'n', v: price, w: `${price}`};
     workSheet['J' + rowNb] = { t:'n', v: qty, w: `${qty}` };
-    // workSheet['K' + rowNb] = { t:'n', v: price*qty, w: `${price*qty}` };
+    workSheet['K' + rowNb] = { t:'n', v: price*qty, w: `${price*qty}` };
 
     //update xlsx file
     workBook.Sheets[currentMonth] = workSheet
@@ -142,36 +139,18 @@ function getMonth(){
   return month
 }
 
-function editRanges(){
-  const workBook = XLSX.readFile("CoffeeHub.xlsx")
+// function editRanges(){
+//   const workBook = XLSX.readFile("CoffeeHub.xlsx")
   
-  Object.keys(workBook.Sheets).forEach(key=>{
-    if(key != "2024 SUMMARY"){
-      const sheet = workBook.Sheets[key]
-      const range = XLSX.utils.decode_range(sheet['!ref'])
-      range.e.r = 1000
-      sheet["!ref"] = XLSX.utils.encode_range(range)
-      workBook.Sheets[key] = sheet
-    }
-  })
-  XLSX.writeFile(workBook, "CoffeeHub.xlsx")
+//   Object.keys(workBook.Sheets).forEach(key=>{
+//     if(key != "2024 SUMMARY"){
+//       const sheet = workBook.Sheets[key]
+//       const range = XLSX.utils.decode_range(sheet['!ref'])
+//       range.e.r = 500
+//       sheet["!ref"] = XLSX.utils.encode_range(range)
+//       workBook.Sheets[key] = sheet
+//     }
+//   })
+//   XLSX.writeFile(workBook, "CoffeeHub.xlsx")
 
-}
-
-
-function testFunc(){
-
-const workbook = XLSX.readFile('CoffeeHub.xlsx');
-
-const worksheet = workbook.Sheets['2024 SUMMARY'];
-
-const chart = worksheet['!chart'];
-console.log(worksheet)
-if (chart) {
-    console.log(chart);
-} else {
-    console.log("No chart found in the worksheet.");
-}
-
-}
-testFunc()
+// }

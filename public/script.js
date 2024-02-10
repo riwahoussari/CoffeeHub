@@ -90,7 +90,8 @@ async function postOrder() {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(item)
-        }).then(res => {
+        })
+        .then(res => {
             if(!res.ok) {
                 popup.querySelector('button.confirm').classList.remove('disabled')
                 alert('THERE WAS AN ERROR\nMake sure the excel sheet is closed. \nIf it is closed and the error still shows up contact the IT team :)')
