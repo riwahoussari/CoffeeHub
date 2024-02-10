@@ -112,6 +112,7 @@ section{
     background-color: transparent;
 
     display: flex;
+    align-content: start;
     flex-wrap: wrap;
     gap: 2vw;
     overflow: scroll;
