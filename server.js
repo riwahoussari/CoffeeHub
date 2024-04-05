@@ -58,19 +58,26 @@ app.use(cors())
 //////////////////////////////////////////////////////////
 //routes
 app.get('/getCards', async (req, res) => {
+  console.log("/getCards request")
   const cards = await Card.find({})
   res.json(cards)
+  console.log("Cards sent")
 })
 app.post('/addSale', (req, res) => {
+  console.log("/addSale post request")
   addMongoSale(req.body.item , req.body.price, req.body.qty)
   res.json({ message: 'Data received successfully' });
+  console.log("Sale added")
 })
 app.post('/addExpense', (req, res) => {
+  console.log("/addExpense post request")
   addMongoExpense(req.body.item , req.body.price, req.body.qty, 'lorem ipsum dolor')
   res.json({ message: 'Data received successfully' });
+  console.log("Expense added")
 })
 
 app.post('/fetchSheet', async (req, res)=>{
+  console.log("/fetchSheet request")
   const {month, year} = req.body
   let sales, expenses;
   if (month < 13) {
@@ -80,9 +87,11 @@ app.post('/fetchSheet', async (req, res)=>{
   }else {
     const data = await getFullYearData(year);
     res.json(data)
+    console.log("/fetchSheet responded")
   }
 })
 app.post('/delete', async (req, res)=>{
+  console.log("/delete post request");
   const {section, id} = req.body
   let record;
   if (section == 'sales'){
@@ -94,15 +103,19 @@ app.post('/delete', async (req, res)=>{
 
   if(!!record){
     res.json({message: "true"})
+    console.log("deleted");
   }else{
     res.json({message: 'false', err: 'There was a server error deleting this item.'})
+    console.log("error");
   }
 })
 
 
 app.get('*', (req, res) => {
+  console.log("* get request");
   const indexPath = path.resolve(__dirname, 'public', 'index.html');
   res.sendFile(indexPath);
+  console.log("* responded");
 });
 app.listen(PORT, () => {
   console.log(`Server is up and running`);
