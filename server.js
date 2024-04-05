@@ -1,13 +1,49 @@
-import * as XLSX from 'xlsx/xlsx.mjs';
-import * as fs from 'fs';
+import 'dotenv/config'
 import { fileURLToPath } from 'url';
-
-XLSX.set_fs(fs);
 //server
 import express from 'express';
 import path from 'path';
 import cors from 'cors'
 
+////////////////////////////////////////////////////////////
+//mongo database
+import mongoose from "mongoose";
+mongo().then(console.log('mongo connected successfully.')).catch(err => console.log('mongo err: ', err))
+async function mongo(){
+  await mongoose.connect(process.env.DB_URL ,{})
+}
+
+//schemas - models
+const saleSchema = new mongoose.Schema({
+  date: Object,
+  item: String,
+  price: Number,
+  qty: Number,
+  total: Number,
+  deleted: Boolean,
+  deleteDate: String
+})
+const Sale = new mongoose.model('sale', saleSchema)
+const expenseSchema = new mongoose.Schema({
+  date: Object,
+  item: String,
+  price: Number,
+  qty: Number,
+  total: Number,
+  deleted: Boolean,
+  deleteDate: String
+})
+const Expense = new mongoose.model('expense', expenseSchema)
+const cardSchema = new mongoose.Schema({
+  type: String,
+  name: String,
+  price: String,
+})
+const Card = new mongoose.model('card', cardSchema)
+
+
+//////////////////////////////////////////////////////////
+//server setup
 const app = express();
 const PORT = 5050;
 
@@ -17,107 +53,91 @@ app.use(express.static('public'));
 
 app.use(express.json())
 app.use(cors())
+
+
+//////////////////////////////////////////////////////////
+//routes
+app.get('/getCards', async (req, res) => {
+  const cards = await Card.find({})
+  res.json(cards)
+})
 app.post('/addSale', (req, res) => {
-  console.log('received sale')
-  addSale(formatDate(), req.body.item , req.body.price, req.body.qty)
-  
+  addMongoSale(req.body.item , req.body.price, req.body.qty)
   res.json({ message: 'Data received successfully' });
-  console.log('sale added')
 })
 app.post('/addExpense', (req, res) => {
-  console.log('received expense')
-  addExpense(formatDate(), req.body.item , req.body.price, req.body.qty)
+  addMongoExpense(req.body.item , req.body.price, req.body.qty, 'lorem ipsum dolor')
   res.json({ message: 'Data received successfully' });
-  console.log('added expense')
 })
+
+app.post('/fetchSheet', async (req, res)=>{
+  const {month, year} = req.body
+  let sales, expenses;
+  if (month < 13) {
+    sales = await Sale.find({deleted: false, "date.month": month, "date.year": year}, {__v: 0}).sort({"date.date":1})
+    expenses = await Expense.find({deleted: false, "date.month": month, "date.year": year}, {__v: 0}).sort({"date.date":1})
+    res.json({sales, expenses})
+  }else {
+    const data = await getFullYearData(year);
+    res.json(data)
+  }
+})
+app.post('/delete', async (req, res)=>{
+  const {section, id} = req.body
+  let record;
+  if (section == 'sales'){
+    record = await Sale.findOneAndUpdate({_id: id}, {$set: {deleted: true, deleteDate: new Date().toLocaleString()}}, {new: true})
+  }
+  else{
+    record = await Expense.findOneAndUpdate({_id: id}, {$set: {deleted: true, deleteDate: new Date().toLocaleString()}}, {new: true})
+  }
+
+  if(!!record){
+    res.json({message: "true"})
+  }else{
+    res.json({message: 'false', err: 'There was a server error deleting this item.'})
+  }
+})
+
 
 app.get('*', (req, res) => {
   const indexPath = path.resolve(__dirname, 'public', 'index.html');
   res.sendFile(indexPath);
 });
-
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is up and running`);
 });
 
 
-function addSale(date, item, price, qty){
-    //get workbook and worksheet
-    const currentMonth = getMonth()
-    //get workbook and worksheet
-    const workBook = XLSX.readFile("CoffeeHub.xlsx")
-    const workSheet = workBook.Sheets[currentMonth]
-    //get the new row index
-    let rowNb = 2; 
-    while (true) {
-      //if current row has content continue looping
-      if(workSheet['A' + rowNb] != null){
-        rowNb++
-      }
-      //if current row is empty check the next 20 rows 
-        //if we find content in a row then continue looping from that found row
-        //else if all 10 rows are empty then break the loop and the rowNb = the empty row
-      else {
-        let correctRow = true;
-        for(let i=1; i<11; i++){
-            if(workSheet['A'+(rowNb+i)] != null) { 
-              rowNb = rowNb + i + 1; 
-              i=12; //break
-              correctRow = false;
-            }
-        }
-        if(correctRow){break}
-      }
-    }
-
-    //add content to new cells
-    workSheet['A' + rowNb] = {t:'s', v:`${date}`, r:`<t>${date}</t>`, h:`${date}`, w:`${date}`};
-    workSheet['B' + rowNb] = { t:'s', v: `${item}`, r: `<t>${item}</t>`, h: `${item}`, w: `${item}` };
-    workSheet['C' + rowNb] = { t:'n', v: price, w: `${price}`};
-    workSheet['D' + rowNb] = { t:'n', v: qty, w: `${qty}` };
-    workSheet['E' + rowNb] = { t:'n', v: price*qty, w: `${price*qty}` };
-
-    //update xlsx file
-    workBook.Sheets[currentMonth] = workSheet
-    XLSX.writeFile(workBook, "CoffeeHub.xlsx")
+//////////////////////////////////////////////////////////
+//functions
+function addMongoSale( item, price, qty){
+  const {date, month, year} = formatDate()
+  new Sale({deleted: false, deleteDate: null, date: {date, month, year}, item, price, qty, total: price*qty}).save()
 }
-function addExpense(date, item, price, qty){
-    const currentMonth = getMonth()
-    //get workbook and worksheet
-    const workBook = XLSX.readFile("CoffeeHub.xlsx")
-    const workSheet = workBook.Sheets[currentMonth]
-    //get the new row index
-    let rowNb = 2; 
-    while (true) {
-      //if current row has content continue looping
-      if(workSheet['G' + rowNb] != null){
-        rowNb++
-      }
-      //if current row is empty check the next 20 rows 
-        //if we find content in a row then continue looping from that found row
-        //else if all 10 rows are empty then break the loop and the rowNb = the empty row
-      else {
-        let correctRow = true;
-        for(let i=1; i<11; i++){
-            if(workSheet['G'+(rowNb+i)] != null) { 
-              rowNb = rowNb + i + 1; 
-              i=12; //break
-              correctRow = false;
-            }
-        }
-        if(correctRow){break}
-      }
-    }
-    //add content to new cells
-    workSheet['G' + rowNb] = {t:'s', v:`${date}`, r:`<t>${date}</t>`, h:`${date}`, w:`${date}`};
-    workSheet['H' + rowNb] = { t:'s', v: `${item}`, r: `<t>${item}</t>`, h: `${item}`, w: `${item}` };
-    workSheet['I' + rowNb] = { t:'n', v: price, w: `${price}`};
-    workSheet['J' + rowNb] = { t:'n', v: qty, w: `${qty}` };
-    workSheet['K' + rowNb] = { t:'n', v: price*qty, w: `${price*qty}` };
+function addMongoExpense( item, price, qty, description){
+  const {date, month, year} = formatDate()
+  new Expense({deleted: false, deleteDate: null, date: {date, month, year}, item, price, qty, total: price*qty, description}).save()
+}
 
-    //update xlsx file
-    workBook.Sheets[currentMonth] = workSheet
-    XLSX.writeFile(workBook, "CoffeeHub.xlsx")
+async function getFullYearData(year){
+  const months = {
+    "01": {}, "02": {}, "03": {}, "04": {}, "05": {}, "06": {}, "07": {}, "08": {}, "09": {}, "10": {}, "11": {}, "12": {}
+  }
+
+  for (let key in months){
+    let totalMonthSales = 0;
+    const sales = await Sale.find({deleted: false, "date.month": key, "date.year": year}, { total: 1})
+    sales.forEach(sale => totalMonthSales += sale.total)
+    
+    let totalMonthExpenses = 0;
+    const expenses = await Expense.find({deleted: false, "date.month": key, "date.year": year}, { total: 1})
+    expenses.forEach(expense => totalMonthExpenses += expense.total)
+
+    months[key] = {sales: totalMonthSales, expenses: totalMonthExpenses}
+  }
+  
+  return months
 }
 
 function formatDate() {
@@ -130,27 +150,10 @@ function formatDate() {
   const month = months[currentDate.getMonth()];
   const year = currentDate.getFullYear();
 
-  return `${dayOfWeek} ${dayOfMonth < 10 ? '0' : ''}${dayOfMonth}/${months.indexOf(month) + 1 < 10 ? '0' : ''}${months.indexOf(month) + 1}/${year}`;
-}
-function getMonth(){
-  const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-  const currentDate = new Date();
-  const month = months[currentDate.getMonth()]
-  return month
+  return {
+    date: `${dayOfMonth < 10 ? '0' : ''}${dayOfMonth}`,
+    month: `${months.indexOf(month) + 1 < 10 ? '0' : ''}${months.indexOf(month) + 1}`,
+    year: `${year}`
+  }
 }
 
-// function editRanges(){
-//   const workBook = XLSX.readFile("CoffeeHub.xlsx")
-  
-//   Object.keys(workBook.Sheets).forEach(key=>{
-//     if(key != "2024 SUMMARY"){
-//       const sheet = workBook.Sheets[key]
-//       const range = XLSX.utils.decode_range(sheet['!ref'])
-//       range.e.r = 500
-//       sheet["!ref"] = XLSX.utils.encode_range(range)
-//       workBook.Sheets[key] = sheet
-//     }
-//   })
-//   XLSX.writeFile(workBook, "CoffeeHub.xlsx")
-
-// }

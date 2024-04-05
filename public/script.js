@@ -27,51 +27,117 @@ popup.querySelector('button.cancel').addEventListener('click', () => {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //clear order button
-document.querySelectorAll('.clearOrder').forEach(btn => btn.addEventListener('click', () => clearOrder(false)))
 
-//menu cards
-const cards = document.querySelectorAll('.card')
-cards.forEach(card => {
+const clearSalesButton = document.querySelector('.sales.clearOrder')
+const clearExpensesButton = document.querySelector('.expenses.clearOrder')
+document.querySelectorAll('.clearOrder').forEach(btn => btn.addEventListener('click', () => clearOrder(false)))
+const menu = document.getElementById('menu')
+function createCard({type, name, price, img}){
+    let card = document.createElement('div')
+    card.classList.add("card")
+    card.classList.add(type)
+    type == 'expenses' && card.classList.add('hidden')
+
+    let textDiv = document.createElement('div')
+    textDiv.classList.add('text')
+
+    let itemName = document.createElement('p')
+    itemName.classList.add('item')
+    itemName.textContent = name
+    textDiv.appendChild(itemName)
+    
+    let priceElm = document.createElement('p')
+    priceElm.classList.add('price')
+    priceElm.textContent = price
+    textDiv.appendChild(priceElm)
+
+    let qtyDiv = document.createElement('div')
+    qtyDiv.classList.add('qty')
+
+    let minusBtn = document.createElement('button')
+    minusBtn.classList.add('minus')
+    qtyDiv.appendChild(minusBtn)
+    
+    let qtyNum = document.createElement('p')
+    qtyNum.classList.add('num')
+    qtyNum.textContent = '0'
+    qtyDiv.appendChild(qtyNum)
+    
+    let plusBtn = document.createElement('button')
+    plusBtn.classList.add('plus')
+    qtyDiv.appendChild(plusBtn)
+
+    //append divs to card
+    card.appendChild(textDiv)
+    card.appendChild(qtyDiv)
+
+    //append card to menu
+    if(type == 'sales'){
+        menu.insertBefore(card, clearSalesButton)
+    }else{
+        menu.insertBefore(card, clearExpensesButton)
+    }
+
+    //card click functionality
     card.addEventListener('click', ()=>{
         //note the funtions addItemToSidebar and increaseQty expect the plus button as a parameter
-        const btn = card.querySelector('.plus')
 
         //change card style
         card.classList.add('active')
-        card.querySelector('.minus').classList.remove('disabled')
-        //increase qty
-        card.querySelector('.num').textContent++
-        //if the first time adding this item add it to the order list
-        if(card.querySelector('.num').textContent == 1){ addItemToSidebar(btn)} 
-        //if not the first time increase the qty in the order list
-        else { increaseQty(btn) }
-    })
-})
-//menu cards minus button
-const minusBtn = document.querySelectorAll('button.minus')
-minusBtn.forEach(btn => {
-    //all qty begin at 0 so minus buttons are disabled
-    btn.classList.add('disabled')
+        minusBtn.classList.remove('disabled')
 
-    btn.addEventListener('click', (e)=>{
+        //increase qty
+        qtyNum.textContent++
+
+        //if the first time adding this item add it to the order list
+        if(qtyNum.textContent == 1){ addItemToSidebar(plusBtn)} 
+
+        //if not the first time increase the qty in the order list
+        else { increaseQty(plusBtn) }
+    })
+
+    //minus button functionality
+    minusBtn.classList.add('disabled')
+    minusBtn.addEventListener('click', (e)=>{
         //make sure the card event listerner isn't triggered
         e.bubbles = false
         e.cancelBubble = true
 
         //decrease number
-        let num = btn.parentElement.querySelector('.num')
-        num.textContent > 0 && num.textContent--
-        decreaseQty(btn);
+        qtyNum.textContent > 0 && qtyNum.textContent--
+        decreaseQty(minusBtn);
 
         //if order qty is 0 remove it from order list 
-        if(num.textContent == 0){ 
-            removeItemFromSidebar(btn);
-            btn.classList.add('disabled')
-            btn.parentElement.parentElement.classList.remove('active')
+        if(qtyNum.textContent == 0){ 
+            removeItemFromSidebar(minusBtn);
+            minusBtn.classList.add('disabled')
+            card.classList.remove('active')
         } 
 
     })
-})
+
+    return card
+}
+
+const cards = []
+function createCards(){
+    fetch("http://127.0.0.1:5050/getCards")
+    .then(res => {
+        if (!res.ok) { throw new Error('Network response was not ok'); }
+        return res.json();
+      })
+      .then(data => {
+        data.forEach(obj => {
+            let card = createCard(obj)
+            cards.push(card)
+        })
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+}
+createCards()
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -263,8 +329,6 @@ function calcTotal(){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-document.querySelectorAll('.card.expenses').forEach(card => card.classList.add('hidden'))
-document.querySelectorAll('.clearOrder.expenses').forEach(card => card.classList.add('hidden'))
 const navExpensesBtn = document.querySelector('header nav .expenses')
 navExpensesBtn.addEventListener('click', switchToExpenses )
 const navSalesBtn = document.querySelector('header nav .sales')
@@ -302,3 +366,5 @@ function switchToSales() {
     document.querySelectorAll('.clearOrder.expenses').forEach(card => card.classList.add('hidden'))
     document.querySelectorAll('.clearOrder.sales').forEach(card => card.classList.remove('hidden'))
 }
+
+

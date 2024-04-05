@@ -1,0 +1,194 @@
+*{
+    cursor: pointer;
+    user-select: none;
+}
+body{
+    overflow-x: hidden;
+}
+:root{
+    --black: #000;
+    --black60: rgba(0, 0, 0, 0.6) ;
+    --white: #fff;
+    --white80: rgba(255, 255, 255, 0.8) ;
+    --white60: rgba(255, 255, 255, 0.6) ;
+    --white20: rgba(255, 255, 255, 0.2) ;
+    --bg: #111315;
+    --neutral: #2d2d2d;
+    --green: #87CA82;
+    --blue: rgb(107, 175, 197);
+    --red:rgb(197, 113, 107);
+}
+header option, header select{font-size: 1.2vw;padding: 0.5vw ;}
+#sheet{
+   width: 100vw;
+   display: grid;
+   grid-template-columns: 1fr 1fr;
+   margin-top: 0vh;
+   height: unset;
+}#sheet.fullYear{
+    grid-template-columns: 1fr;
+    padding: 0 20vw;
+    gap: 0;
+}#sheet.fullYear div.sheetRow{
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    font-size: 1.5vw;
+    padding: 1.5vw;
+    justify-items: center;
+}#sheet.fullYear div.sheetRow .total{
+    justify-self: center;
+}#sheet.fullYear .sheetRow .green{color: var(--green);}
+#sheet.fullYear .sheetRow .red{color: var(--red);}
+#sheet .sheetHeader{
+    text-align: center;
+    padding: 1vw;
+    font-size: 1.5vw;
+    font-weight: bold;
+}#sales .sheetHeader{color: var(--green)
+}#expenses .sheetHeader{color: var(--red)}
+#sheet .sheetRow{
+    position: relative;
+    width: 100%;
+    display: grid;
+    align-items: end;
+    grid-template-columns: 1fr 1.5fr 1fr 0.2fr 1fr;
+    font-size: 1.2vw;
+
+    
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    border-top: 1px solid rgba(255, 255, 255, 0.5);
+    padding: 1vw;
+}
+
+#sheet .sheetRow .date{
+    font-size: 1vw;
+    opacity: 0.7;
+}#sheet.fullYear .sheetRow .date{
+    font-size: 1.2vw
+}
+#sheet .sheetRow .total{justify-self: end;}
+#sheet #sales .sheetRow .total{color: var(--green)}
+#sheet #expenses .sheetRow .total{color: var(--red)}
+
+#sheet .sheetRow.swiped{
+    transform: translateX(-40px);
+    transition: transform 100ms ease-in-out;
+}
+#sheet .sheetRow .delBtn{
+    position: absolute;
+    height: 100%;
+    width: 40px;
+    color: white;
+    left: 100%;
+    background-color: red;
+    outline: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    transform: scale(0%);
+}
+#sheet .sheetRow.swiped .delBtn{
+    transform: scaleX(100%);
+    transition: transform 100ms ease-in-out ;
+}
+
+.popup.confirm .buttons button.confirm {background-color: rgb(197, 113, 107);}
+
+footer{
+    position: fixed;
+    min-width: max-content;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, -20%);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    padding: 1vw 3vw;
+    gap: 3vw;
+    background-color: #2d2d2d;
+    border-radius: 20px;
+    box-shadow: 5px -5px 100px black;
+}
+footer div{
+    display: flex;
+    flex-direction: column;
+    gap: 0.3vw;
+    align-items: center;
+}
+footer .title{
+    font-weight: bold;
+    font-size: max(1.2vw, 16px);
+}
+footer .number{
+    opacity: 0.7;
+    font-size: max(1.5vw, 22px);
+}
+footer .number.red {color: var(--red); opacity: 1;}
+footer .number.green {color: var(--green); opacity: 1;}
+
+@media (max-aspect-ratio: 1) {
+    main{
+        padding-inline: 2vw;
+        gap: 2vw;
+    }
+    header option, header select{font-size: 2vw; }
+    #sheet.fullYear{
+        padding: 0 10vw;
+    }#sheet.fullYear div.sheetRow{
+        font-size: 2.5vw;
+    }#sheet.fullYear .sheetRow .date{
+        font-size: 2vw;
+    }
+    #sheet .sheetHeader{
+        padding: 2vw;
+        font-size: 2.5vw;
+    }
+    #sheet .sheetRow{
+        padding: 1.2vw;
+        font-size: 1.6vw;
+    }
+    #sheet .sheetRow .date{
+        font-size: 1.2vw;
+    }
+
+    footer{
+        padding: 2vw 6vw;
+        gap: 6vw;
+    }footer div{
+        gap: 0.6vw;
+    }footer .title{
+        font-size: max(2.4vw, 16px);
+    }footer .number{
+        font-size: max(3vw, 18px);
+    }
+}
+@media (max-aspect-ratio: 0.8){
+    #sheet{
+        display: flex;
+        flex-direction: column;
+        gap: 4vh;
+        padding-inline: 5vw;
+
+    }
+    header option, header select{font-size: 3vw; }
+
+    #sheet.fullYear{
+        padding: 0 5vw;
+        margin-top: 5vh;
+    }#sheet.fullYear div.sheetRow{
+        font-size: 3.2vw;
+    }#sheet.fullYear .sheetRow .date{
+        font-size: 3vw;
+    }
+    #sheet .sheetHeader{
+        padding: 3vw;
+        font-size: 3.2vw;
+    }
+    #sheet .sheetRow{
+        padding: 1.8vw;
+        font-size: 2.4vw;
+    }
+    #sheet .sheetRow .date{
+        font-size: 1.8vw;
+    }
+}

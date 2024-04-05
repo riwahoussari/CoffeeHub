@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sheet</title>
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="./sheet.css">
+</head>
+<body>
+    <div class="popup confirm hidden">
+        <p>Delete Record?</p>
+        <div class="buttons">
+            <button class="cancel">Cancel</button>
+            <button class="confirm">Delete</button>
+        </div>
+    </div>
+    <div class="overlay hidden"></div>
+
+    <header>
+        <a href="./" class="title">Coffee Hub</a>
+        <nav>
+            <select id="monthMenu">
+                <option value="01">January</option>
+                <option value="02">February</option>
+                <option value="03">March</option>
+                <option value="04">April</option>
+                <option value="05">May</option>
+                <option value="06">June</option>
+                <option value="07">July</option>
+                <option value="08">August</option>
+                <option value="09">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+                <option value="13">Full Year</option>
+            </select>
+            <select id="yearMenu">
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+            </select>
+        </nav>
+    </header>
+
+    <main id="sheet">
+        <div id="sales">
+            <div class="sheetHeader">Sales</div>
+        </div>
+        <div id="expenses">
+            <div class="sheetHeader">Expenses</div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="sales">
+            <p class="title">Sales</p>
+            <p class="number"></p>
+        </div>
+        <div class="expenses">
+            <p class="title">Expenses</p>
+            <p class="number"></p>
+        </div>
+        <div class="profit">
+            <p class="title">Profit</p>
+            <p class="number"></p>
+        </div>
+        <div class="profitPercent">
+            <p class="title">Profit %</p>
+            <p class="number"></p>
+        </div>
+    </footer>
+</body>
+<script src="./sheet.js"></script>
+</html>
