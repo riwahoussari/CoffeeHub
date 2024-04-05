@@ -2,6 +2,7 @@ let order = [];
 const popup = document.querySelector('.popup')
 const overlay = document.querySelector('.overlay')
 const orderBtn = document.querySelector('button.order')
+const fetchUrl = "https://coffeehub-u2y1.onrender.com/"
 //when order button is clicked display popup to confirm order
 orderBtn.addEventListener('click', ()=>{
     if(order.length > 0){
@@ -121,7 +122,7 @@ function createCard({type, name, price, img}){
 
 const cards = []
 function createCards(){
-    fetch("http://127.0.0.1:5050/getCards")
+    fetch(`${fetchUrl}getCards`)
     .then(res => {
         if (!res.ok) { throw new Error('Network response was not ok'); }
         return res.json();
@@ -147,9 +148,9 @@ createCards()
 async function postOrder() {
     let url = '';
     if(document.body.classList.contains('sales')){
-        url = 'http://127.0.0.1:5050/addSale';
+        url = `${fetchUrl}addSale` ;
     }else {
-        url = 'http://127.0.0.1:5050/addExpense'
+        url = `${fetchUrl}addExpense`
     }
     const fetchPromises = order.map(item => {
         return fetch(url, {

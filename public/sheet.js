@@ -3,6 +3,7 @@ const salesSection = document.getElementById('sales')
 const expensesSection = document.getElementById('expenses')
 const monthMenu = document.getElementById('monthMenu')
 const yearMenu = document.getElementById('yearMenu')
+const fetchUrl = "https://coffeehub-u2y1.onrender.com/"
 //navigation between months
 window.addEventListener('load', ()=>{
     const currentMonth = new Date().toISOString().split("-")[1]
@@ -32,7 +33,7 @@ function switchTo(month, year){
     })
 
     //fetch data and display new rows
-    fetch("http://127.0.0.1:5050/fetchSheet", {
+    fetch(`${fetchUrl}fetchSheet`, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json' 
@@ -265,7 +266,7 @@ popup.querySelector('.cancel').addEventListener('click', () => {
 })
 popup.querySelector('.confirm').addEventListener('click', () => {
 
-    fetch("http://127.0.0.1:5050/delete", {
+    fetch(`${fetchUrl}delete`, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json' 
