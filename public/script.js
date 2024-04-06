@@ -1,8 +1,26 @@
+// const fetchUrl = "http://127.0.0.1:5050/api/"
+const fetchUrl = "https://coffeehub-u2y1.onrender.com/api/"
+
+//check authentication
+fetch(`${fetchUrl}auth/checkAuth`, {method: "POST", credentials: "include"}).then(res => {
+    if(!res.ok){throw new Error('server response not ok')}
+    return res.json()
+}).then(response => {
+    console.log(response)
+    if(!response.auth){
+        window.location.href = "./login"
+    }
+}).catch(err => console.log(err))
+
+
 let order = [];
 const popup = document.querySelector('.popup')
 const overlay = document.querySelector('.overlay')
 const orderBtn = document.querySelector('button.order')
-const fetchUrl = "https://coffeehub-u2y1.onrender.com/api"
+
+///////////////////////////////////////////////////////////////////////
+//place order
+
 //when order button is clicked display popup to confirm order
 orderBtn.addEventListener('click', ()=>{
     if(order.length > 0){
@@ -24,15 +42,64 @@ popup.querySelector('button.cancel').addEventListener('click', () => {
     popup.querySelector('button.confirm').classList.remove('disabled')
 })
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//clear order button
+async function postOrder() {
+    let url = '';
+    if(document.body.classList.contains('sales')){
+        url = `${fetchUrl}addSale` ;
+    }else {
+        url = `${fetchUrl}addExpense`
+    }
+    const fetchPromises = order.map(item => {
+        return fetch(url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(item)
+        })
+        .then(res => {
+            if(!res.ok) {
+                popup.querySelector('button.confirm').classList.remove('disabled')
+                alert('THERE WAS AN ERROR\nMake sure the excel sheet is closed. \nIf it is closed and the error still shows up contact the IT team :)')
+            }
+            return res.json()
+        }).then(data => console.log(data)) 
+    });
+
+    try {
+        await Promise.all(fetchPromises);
+        clearOrder(true)
+    } catch (error) {
+        console.error('Error occurred during fetch:', error);
+    }
+}
+
+////////////////////////////////////////////////////////////////////
+//clear order
 
 const clearSalesButton = document.querySelector('.sales.clearOrder')
 const clearExpensesButton = document.querySelector('.expenses.clearOrder')
 document.querySelectorAll('.clearOrder').forEach(btn => btn.addEventListener('click', () => clearOrder(false)))
+
+function clearOrder(isAlert){
+    order = [];
+    document.querySelectorAll('#sidebar .items .item').forEach(item => item.remove())
+    document.querySelector('#sidebar .total .price').textContent = '0LL'
+    cards.forEach(card => {
+        card.classList.remove('active')
+        card.querySelector('.minus').classList.add('disabled');
+        card.querySelector('.num').textContent = 0;
+    })
+    popup.classList.add('hidden')
+    popup.querySelector('button.confirm').classList.remove('disabled')
+    overlay.classList.add('hidden')
+
+    isAlert && alert('Order added successfully!')
+}
+
+//////////////////////////////////////////////////////////////////////
+//menu cards
 const menu = document.getElementById('menu')
+const cards = []
+
 function createCard({type, name, price, img}){
     let card = document.createElement('div')
     card.classList.add("card")
@@ -119,9 +186,8 @@ function createCard({type, name, price, img}){
 
     return card
 }
-
-const cards = []
 function createCards(){
+    console.log('fetching cards')
     fetch(`${fetchUrl}getCards`)
     .then(res => {
         if (!res.ok) { throw new Error('Network response was not ok'); }
@@ -137,59 +203,13 @@ function createCards(){
         console.error('Error:', error);
       });
 }
+
 createCards()
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+//Functions
 
-//post each item in 'order' array with fetch
-async function postOrder() {
-    let url = '';
-    if(document.body.classList.contains('sales')){
-        url = `${fetchUrl}addSale` ;
-    }else {
-        url = `${fetchUrl}addExpense`
-    }
-    const fetchPromises = order.map(item => {
-        return fetch(url, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(item)
-        })
-        .then(res => {
-            if(!res.ok) {
-                popup.querySelector('button.confirm').classList.remove('disabled')
-                alert('THERE WAS AN ERROR\nMake sure the excel sheet is closed. \nIf it is closed and the error still shows up contact the IT team :)')
-            }
-            return res.json()
-        }).then(data => console.log(data)) 
-    });
-
-    try {
-        await Promise.all(fetchPromises);
-        clearOrder(true)
-    } catch (error) {
-        console.error('Error occurred during fetch:', error);
-    }
-}
-//reset everything
-function clearOrder(isAlert){
-    order = [];
-    document.querySelectorAll('#sidebar .items .item').forEach(item => item.remove())
-    document.querySelector('#sidebar .total .price').textContent = '0LL'
-    cards.forEach(card => {
-        card.classList.remove('active')
-        card.querySelector('.minus').classList.add('disabled');
-        card.querySelector('.num').textContent = 0;
-    })
-    popup.classList.add('hidden')
-    popup.querySelector('button.confirm').classList.remove('disabled')
-    overlay.classList.add('hidden')
-
-    isAlert && alert('Order added successfully!')
-}
 //add a new item in the sidebar order list
 function addItemToSidebar(btn){
     console.log(btn)
@@ -327,9 +347,8 @@ function calcTotal(){
 }
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////
 const navExpensesBtn = document.querySelector('header nav .expenses')
 navExpensesBtn.addEventListener('click', switchToExpenses )
 const navSalesBtn = document.querySelector('header nav .sales')

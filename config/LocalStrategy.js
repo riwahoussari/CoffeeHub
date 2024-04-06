@@ -17,6 +17,7 @@ passport.deserializeUser(async (user, done) => {
 
 const localRegister = (req, res)=>{
     console.log('Register request received')
+    console.log(req.body)
     let {username, password} = req.body;
     const usernamePattern = /^[A-Za-z0-9 ]+$/
     if(!usernamePattern.test(username)){

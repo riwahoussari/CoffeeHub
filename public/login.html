@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./styles.css">
+    <style>
+        body{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100vw;
+            height: 100vh;
+        }
+        .wrapper{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: min(5vw, 28px) ;
+        }
+        form{
+            display: flex;
+            flex-direction: column;
+            width: min(80vw, 450px);
+            background-color: var(--neutral);
+            padding: min(4vw, 22px);
+            gap: min(3vw, 16px);
+            border-radius: 10px;
+        }
+        form input{
+            font-size: min(3vw, 18px);
+            border: none;
+            outline: none;
+            border-radius: min(0.5vw ,5px) ;
+            padding: min(1vw, 10px) ;
+            width: 100%;
+            margin-top: min(1vw, 10px);
+        }
+        h1{
+            font-size: min(5vw, 32px);
+        }
+        label{
+            font-size: min(4vw, 24px);
+        }
+        button{
+            background-color: var(--green);
+            font-size: min(4vw, 24px);
+            font-weight: bold;
+            border: none;
+            border-radius: 100vw;
+            padding: min(1vw, 10px);
+            margin-top: min(3vw, 24px);
+        }button:hover{
+            opacity: 0.65;
+        }
+        ::selection{
+            background-color: unset;
+            color: unset;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <h1 class="hidden">Logging In...</h1>
+        <form>
+            <div class="wrap">
+                <label for="username">Username</label>
+                <input type="text" name="username" id="username" required>
+            </div>
+            <div class="wrap">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+    <script>
+        // const fetchUrl = "http://127.0.0.1:5050/api/"
+        const fetchUrl = "https://coffeehub-u2y1.onrender.com/api/"
+        const h1 = document.querySelector('h1')
+        const usernameIpt = document.getElementById('username')
+        const passwordIpt = document.getElementById('password')
+        const form = document.querySelector('form')
+        form.addEventListener('submit', (e) => handleSubmit(e) )
+
+        function handleSubmit(e){
+            e.preventDefault()
+            const username = usernameIpt.value
+            const password = passwordIpt.value
+
+            h1.classList.remove('hidden')
+            fetch(`${fetchUrl}auth/login`, {
+                method: "POST", 
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({username, password})
+            }).then(res => {
+                if(!res.ok){throw new Error('server response not ok')}
+                return res.json()
+            }).then(response => {
+                h1.classList.add('hidden')
+                
+                if(response.success){
+                    window.location.href = "./"
+                }else{
+                    alert(response.message)
+                }
+            }).catch(err => console.log(err))
+
+        }
+    </script>
+</body>
+</html>

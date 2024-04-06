@@ -1,9 +1,23 @@
+// const fetchUrl = "http://127.0.0.1:5050/api/"
+const fetchUrl = "https://coffeehub-u2y1.onrender.com/api/"
+
+//check authentication
+fetch(`${fetchUrl}auth/checkAuth`, {method: "POST", credentials: "include"}).then(res => {
+    if(!res.ok){throw new Error('server response not ok')}
+    return res.json()
+}).then(response => {
+    console.log(response)
+    if(!response.auth){
+        window.location.href = "./login"
+    }
+}).catch(err => console.log(err))
+
+
 const navButtons = document.querySelectorAll('header .month')
 const salesSection = document.getElementById('sales')
 const expensesSection = document.getElementById('expenses')
 const monthMenu = document.getElementById('monthMenu')
 const yearMenu = document.getElementById('yearMenu')
-const fetchUrl = "https://coffeehub-u2y1.onrender.com/api"
 //navigation between months
 window.addEventListener('load', ()=>{
     const currentMonth = new Date().toISOString().split("-")[1]

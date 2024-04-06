@@ -22,7 +22,7 @@ app.use(session({
   saveUninitialized: false,
   resave: false,
   cookie: {
-      maxAge: 24 * 60 * 60 * 1000,
+      maxAge: 3 * 24 * 60 * 60 * 1000,
   },
   store: MongoStore.create({mongoUrl: process.env.DB_URL})
 }))  
@@ -39,14 +39,19 @@ async function mongo(){
 
 //middleware setup 
 app.use(express.static('public'));
-app.use(express.json())
 app.use(cors())
+app.use(express.json())
 
 app.use("/api", apiRouter)
 
 
 //routes
-
+app.get('/login', (req, res) => {
+  console.log('/login page request')
+  const indexPath = path.resolve(__dirname, 'public', 'login.html');
+  res.sendFile(indexPath);
+  console.log("login page responded");
+})
 app.get('/sheet', (req, res) => {
   console.log("/sheet get request");
   const indexPath = path.resolve(__dirname, 'public', 'sheet.html');
