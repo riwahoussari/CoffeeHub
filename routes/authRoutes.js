@@ -1,4 +1,4 @@
-import Local from '../config/LocalStrategy';
+import Local from '../config/LocalStrategy.js';
 import {Router as expressRouter} from 'express'
 const authRouter = expressRouter();
 

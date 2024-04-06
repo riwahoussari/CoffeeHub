@@ -7,7 +7,7 @@ import MongoStore from 'connect-mongo';
 import session from 'express-session';
 import passport from 'passport';
 import mongoose from "mongoose";
-import apiRouter from './routes/apiRoutes';
+import apiRouter from './routes/apiRoutes.js';
 
 //server setup
 const app = express();

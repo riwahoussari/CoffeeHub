@@ -1,6 +1,6 @@
 import { Router as expressRouter } from "express";
 const apiRouter = expressRouter()
-import {Card, Sale, Expense} from "../models"
+import {Card, Sale, Expense} from "../models.js"
 
 
 //get menu items cards content
@@ -112,7 +112,7 @@ function formatDate() {
 }
 
 //connect  auth router
-import authRouter from "./authRoutes";
+import authRouter from "./authRoutes.js";
 apiRouter.use('/auth', authRouter)
 
 export default apiRouter
