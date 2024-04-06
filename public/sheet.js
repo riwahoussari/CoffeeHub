@@ -3,7 +3,7 @@ const salesSection = document.getElementById('sales')
 const expensesSection = document.getElementById('expenses')
 const monthMenu = document.getElementById('monthMenu')
 const yearMenu = document.getElementById('yearMenu')
-const fetchUrl = "https://coffeehub-u2y1.onrender.com/"
+const fetchUrl = "https://coffeehub-u2y1.onrender.com/api"
 //navigation between months
 window.addEventListener('load', ()=>{
     const currentMonth = new Date().toISOString().split("-")[1]

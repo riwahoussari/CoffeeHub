@@ -2,7 +2,7 @@ let order = [];
 const popup = document.querySelector('.popup')
 const overlay = document.querySelector('.overlay')
 const orderBtn = document.querySelector('button.order')
-const fetchUrl = "https://coffeehub-u2y1.onrender.com/"
+const fetchUrl = "https://coffeehub-u2y1.onrender.com/api"
 //when order button is clicked display popup to confirm order
 orderBtn.addEventListener('click', ()=>{
     if(order.length > 0){
