@@ -19,6 +19,9 @@
     "passport": "^0.7.0",
     "passport-local-mongoose": "^8.0.0",
     "path": "^0.12.7",
-    "url": "^0.11.3"
+    "url": "^0.11.3",
+    "axios": "^0.21.1"
   }
 }
+
+
