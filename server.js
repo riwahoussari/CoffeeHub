@@ -83,7 +83,7 @@ const pingServer = async () => {
 };
 
 // Ping the server every 5 minutes (300,000 milliseconds)
-setInterval(pingServer, 300000);
+setInterval(pingServer, 10000);
 
 // Initial ping to start immediately
 pingServer();
