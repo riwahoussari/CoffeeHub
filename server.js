@@ -9,7 +9,7 @@ import passport from 'passport';
 import mongoose from "mongoose";
 import apiRouter from './routes/apiRoutes.js';
 //ping server
-import axios from 'axios';
+// import axios from 'axios';
 
 //server setup
 const app = express();
@@ -70,23 +70,23 @@ app.listen(PORT, () => {
   console.log(`Server is up and running`);
 });
 
-//ping the Ping Server to keep it active
-const pingServerUrl = 'https://ping-server-04tm.onrender.com'; // Replace with your main server URL
+// //ping the Ping Server to keep it active
+// const pingServerUrl = 'https://ping-server-04tm.onrender.com'; // Replace with your main server URL
 
-const pingServer = async () => {
-    try {
-        await axios.get(pingServerUrl);
-        console.log('Pinged the main server successfully');
-    } catch (error) {
-        console.error('Error pinging the main server:', error);
-    }
-};
+// const pingServer = async () => {
+//     try {
+//         await axios.get(pingServerUrl);
+//         console.log('Pinged the main server successfully');
+//     } catch (error) {
+//         console.error('Error pinging the main server:', error);
+//     }
+// };
 
-// Ping the server every 5 minutes (300,000 milliseconds)
-setInterval(pingServer, 10000);
+// // Ping the server every 5 minutes (300,000 milliseconds)
+// setInterval(pingServer, 10000);
 
 // Initial ping to start immediately
-pingServer();
+// pingServer();
 
 
 
