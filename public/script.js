@@ -1,5 +1,5 @@
 // const fetchUrl = "http://127.0.0.1:5050/api/"
-const fetchUrl = "https://coffeehub-u2y1.onrender.com/api/"
+const fetchUrl = "https://lslcoffeehub.onrender.com/api/"
 
 //check authentication
 fetch(`${fetchUrl}auth/checkAuth`, {method: "POST", credentials: "include"}).then(res => {
