@@ -273,7 +273,7 @@ customItemForm.addEventListener('submit', (e) => {
     customItemForm.classList.contains('sales') ? type = 'sales' : type = "expenses"
 
     let name = customItemFormNameInput.value
-    let price = customItemFormPriceInput.value
+    let price = `${formatLiras(customItemFormPriceInput.value)}LL`
 
     let card = createCard({type, name, price})
     card.classList.remove('hidden')
@@ -474,4 +474,11 @@ function switchToSales() {
     customeOrderSalesButton.classList.remove('hidden')
 }
 
+
+
+
+//utility functions
+function formatLiras(number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
