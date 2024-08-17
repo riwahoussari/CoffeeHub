@@ -125,7 +125,7 @@ section{
     padding-bottom: 2vw;
 }#menu::-webkit-scrollbar {display: none;}
 /* cards */
-#menu .card, #menu .clearOrder{
+#menu .card, #menu .clearOrder, #menu .customOrder{
     width: max(13vw, 130px);
     flex: 1;
 
@@ -142,7 +142,7 @@ section{
     padding: 2vw;
     gap: 1.5vw;
     transition: all 400ms ease-in-out;
-}#menu .card::before, #menu .clearOrder::before{
+}#menu .card::before, #menu .clearOrder::before, #menu .customOrder::before{
     content: '';
     position: absolute;
     z-index: 0;
@@ -153,12 +153,15 @@ section{
     background-color: var(--primary);
     transition: width 300ms ease-in-out;
 }
-#menu .card:hover::before, #menu .clearOrder:hover::before{
+#menu .customOrder::before{
+    background-color: yellow;
+}
+#menu .card:hover::before, #menu .clearOrder:hover::before, #menu .customOrder:hover::before{
     width: 2.4vw;
 }
-#menu .card.active::before{
+#menu .card.active::before, #menu .customOrder.active::before{
     width: 100%;
-}#menu .card.active{color: var(--black);}
+}#menu .card.active, #menu .customOrder.active{color: var(--black);}
 
 /* card text */
 #menu .card .text {
@@ -241,13 +244,13 @@ section{
 }
 
 /* Clear order button/card */
-#menu .clearOrder{
+#menu .clearOrder, #menu .customOrder{
     font-size: max(2vw, 18px);
     font-weight: 600;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-}#menu .clearOrder p{
+}#menu .clearOrder p, #menu .customOrder p{
     position: relative;
 }#menu .clearOrder::before{
     background-color: var(--opp);
@@ -351,7 +354,7 @@ section{
 }
 
 /* confirm order popup */
-.popup.confirm{
+.popup.confirm, .customItemForm{
     position: fixed;
     z-index: 10;
     bottom: 50%;
@@ -370,12 +373,12 @@ section{
     justify-content: space-between;
     align-items: center;
 
-}.popup.confirm .buttons{
+}.popup.confirm .buttons, .customItemForm .buttons{
     display: flex;
     gap: 2vw;
     margin-bottom: 2vw;
 }
-.popup.confirm .buttons button{
+.popup.confirm .buttons button, .customItemForm .buttons button{
     width: 20vw;
     font-size: min(32px,2vw) ;
     font-weight: 600;
@@ -383,11 +386,30 @@ section{
     border-radius: 1vw;
     color: var(--white);
     border: none;
-}.popup.confirm .confirm{background-color: var(--primary);
-}.popup.confirm .cancel{background-color: var(--bg);}
-.popup.confirm .buttons button:hover{
+}.popup.confirm .confirm, .customItemForm .confirm{background-color: var(--primary);
+}.popup.confirm .cancel, .customItemForm .cancel{background-color: var(--bg);}
+.popup.confirm .buttons button:hover, .customItemForm .buttons button:hover{
     opacity: 0.7;
 }
+.customItemForm {
+    input{
+        display: block;
+        width: 30vw;
+        margin: 2vw auto;
+        padding: 1vw 2vw;
+        border-radius: 1vw;
+        font-size: min(32px, 2vw);
+
+        background-color: transparent;
+        border: 1px solid white;
+        color: white;
+        outline: none;
+    }
+    input:focus {
+        border-width: 2px;
+    }
+}
+
 .overlay{
     position: absolute;
     content: '';
@@ -462,7 +484,7 @@ section{
     #menu{
         gap: max(3vw, 10px);
     }
-    #menu .card, #menu .clearOrder{
+    #menu .card, #menu .clearOrder, #menu .customOrder{
         width: max(25vw, 130px);
         gap: 3vw;
         padding: 2vw;

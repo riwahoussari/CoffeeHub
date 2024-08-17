@@ -16,7 +16,8 @@ authRouter.post('/checkAuth', (req, res)=>{
     }
     else{
         console.log('user not authenticated')
-        res.json({auth: false})}
+        res.json({auth: false})
+    }
 })
 
 // logout

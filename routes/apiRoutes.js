@@ -14,15 +14,19 @@ apiRouter.get('/getCards', async (req, res) => {
 //add sale
 apiRouter.post('/addSale', (req, res) => {
     console.log("/addSale post request")
+
     addMongoSale(req.body.item , req.body.price, req.body.qty)
     res.json({ message: 'Data received successfully' });
+
     console.log("Sale added")
 })
 //add expense
 apiRouter.post('/addExpense', (req, res) => {
     console.log("/addExpense post request")
+
     addMongoExpense(req.body.item , req.body.price, req.body.qty, 'lorem ipsum dolor')
     res.json({ message: 'Data received successfully' });
+    
     console.log("Expense added")
 })
 

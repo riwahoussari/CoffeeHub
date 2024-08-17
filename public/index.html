@@ -14,6 +14,17 @@
             <button class="confirm">Confirm</button>
         </div>
     </div>
+    <div class="customItemForm hidden">
+        <p>Add New Item</p>
+        <form>
+            <input type="text" placeholder="Item Name" name="name" required>
+            <input type="number" placeholder="Item Price" name="price" required>
+            <div class="buttons">
+                <button class="cancel" type="button">Cancel</button>
+                <button class="confirm" type="submit">Confirm</button>
+            </div>
+        </form>
+    </div>
     <div class="overlay hidden"></div>
 
     <header>
@@ -25,11 +36,17 @@
     </header>
     <main>
         <section id="menu">
+            <div class="sales customOrder">
+                <p>➕ New Item</p>
+            </div>
+            <div class="expenses customOrder hidden">
+                <p>➕ New Item</p>
+            </div>
             <div class="sales clearOrder">
-                <p>Clear Order</p>
+                <p>🗑️Clear Order🗑️</p>
             </div>
             <div class="expenses clearOrder hidden">
-                <p>Clear Order</p>
+                <p>🗑️Clear Order🗑️</p>
             </div>
         </section>
         <section id="sidebar">

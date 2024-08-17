@@ -1,6 +1,10 @@
 // const fetchUrl = "http://127.0.0.1:5050/api/"
 const fetchUrl = "https://lslcoffeehub.onrender.com/api/"
 
+
+
+
+/////////////////////////////////////////////////////////////////////
 //check authentication
 fetch(`${fetchUrl}auth/checkAuth`, {method: "POST", credentials: "include"}).then(res => {
     if(!res.ok){throw new Error('server response not ok')}
@@ -17,6 +21,10 @@ let order = [];
 const popup = document.querySelector('.popup')
 const overlay = document.querySelector('.overlay')
 const orderBtn = document.querySelector('button.order')
+
+
+
+
 
 ///////////////////////////////////////////////////////////////////////
 //place order
@@ -49,6 +57,7 @@ async function postOrder() {
     }else {
         url = `${fetchUrl}addExpense`
     }
+    
     const fetchPromises = order.map(item => {
         return fetch(url, {
             method: 'POST',
@@ -72,11 +81,18 @@ async function postOrder() {
     }
 }
 
+
+
+
+
+
+
 ////////////////////////////////////////////////////////////////////
 //clear order
 
 const clearSalesButton = document.querySelector('.sales.clearOrder')
 const clearExpensesButton = document.querySelector('.expenses.clearOrder')
+
 document.querySelectorAll('.clearOrder').forEach(btn => btn.addEventListener('click', () => clearOrder(false)))
 
 function clearOrder(isAlert){
@@ -94,6 +110,10 @@ function clearOrder(isAlert){
 
     isAlert && alert('Order added successfully!')
 }
+
+
+
+
 
 //////////////////////////////////////////////////////////////////////
 //menu cards
@@ -141,14 +161,13 @@ function createCard({type, name, price, img}){
 
     //append card to menu
     if(type == 'sales'){
-        menu.insertBefore(card, clearSalesButton)
+        menu.insertBefore(card, customeOrderSalesButton)
     }else{
-        menu.insertBefore(card, clearExpensesButton)
+        menu.insertBefore(card, customeOrderExpensesButton)
     }
 
     //card click functionality
     card.addEventListener('click', ()=>{
-        //note the funtions addItemToSidebar and increaseQty expect the plus button as a parameter
 
         //change card style
         card.classList.add('active')
@@ -158,7 +177,12 @@ function createCard({type, name, price, img}){
         qtyNum.textContent++
 
         //if the first time adding this item add it to the order list
-        if(qtyNum.textContent == 1){ addItemToSidebar(plusBtn)} 
+        if(qtyNum.textContent == 1){ 
+            let itemName = plusBtn.parentElement.parentElement.querySelector('.item').textContent
+            let itemPrice = plusBtn.parentElement.parentElement.querySelector('.price').textContent.replace(',', '').replace('L', '').replace('L', '')
+
+            addItemToSidebar(itemName , itemPrice)
+        } 
 
         //if not the first time increase the qty in the order list
         else { increaseQty(plusBtn) }
@@ -184,6 +208,7 @@ function createCard({type, name, price, img}){
 
     })
 
+    cards.push(card)
     return card
 }
 function createCards(){
@@ -192,56 +217,110 @@ function createCards(){
     .then(res => {
         if (!res.ok) { throw new Error('Network response was not ok'); }
         return res.json();
-      })
-      .then(data => {
+    })
+    .then(data => {
         data.forEach(obj => {
-            let card = createCard(obj)
-            cards.push(card)
+            createCard(obj)
         })
-      })
-      .catch(error => {
+    })
+    .catch(error => {
         console.error('Error:', error);
-      });
+    });
 }
 
 createCards()
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////
+//add custom item 
+const customItemForm = document.querySelector('.customItemForm')
+
+const customItemFormNameInput = customItemForm.querySelector('input[name="name"]')
+const customItemFormPriceInput = customItemForm.querySelector('input[name="price"]')
+
+const customItemFormCancel = customItemForm.querySelector('button.cancel')
+customItemFormCancel.addEventListener('click', hideCustomItemForm)
+
+const customeOrderSalesButton = document.querySelector('.sales.customOrder')
+const customeOrderExpensesButton = document.querySelector('.expenses.customOrder')
+
+customeOrderSalesButton.addEventListener('click', () => showCustomItemForm('sales'))
+customeOrderExpensesButton.addEventListener('click', () => showCustomItemForm('expenses'))
+
+
+function showCustomItemForm(type) {
+    overlay.classList.remove('hidden')
+    customItemForm.classList.remove('hidden')
+
+    customItemForm.classList.add(type)
+    type == "sales" ? customItemForm.classList.remove('expenses') : customItemForm.classList.remove('sales')
+}
+function hideCustomItemForm() {
+    customItemFormNameInput.value = ''
+    customItemFormPriceInput.value = ''
+    customItemForm.classList.add('hidden')
+    overlay.classList.add('hidden')
+}
+
+customItemForm.addEventListener('submit', (e) => {
+    e.preventDefault()
+
+    let type;
+    customItemForm.classList.contains('sales') ? type = 'sales' : type = "expenses"
+
+    let name = customItemFormNameInput.value
+    let price = customItemFormPriceInput.value
+
+    let card = createCard({type, name, price})
+    card.classList.remove('hidden')
+
+    hideCustomItemForm()
+
+})
+
+
+
+
 
 
 ////////////////////////////////////////////////////////////////////
 //Functions
 
 //add a new item in the sidebar order list
-function addItemToSidebar(btn){
-    console.log(btn)
+function addItemToSidebar(itemName, itemPrice){
+    // console.log(btn)
     // add new item
     const item = document.createElement('div')
     item.classList.add('item')
 
     const name = document.createElement('p')
     name.classList.add('name')
+    name.textContent = itemName
     
-    name.textContent = btn.parentElement.parentElement.querySelector('.item').textContent
-
     const span = document.createElement('span')
     span.classList.add('qty')
     span.textContent = 'x1'
-
+    
     const input = document.createElement('input')
     input.setAttribute('type', 'number')
     input.setAttribute('name', name.textContent)
     input.classList.add('price')
-    input.value = btn.parentElement.parentElement.querySelector('.price').textContent.replace(',', '').replace('L', '').replace('L', '')
+    input.value = itemPrice
     input.addEventListener('change', (e) => updatePrice(e.target))
-
+    
     name.appendChild(span)
     item.appendChild(name)
     item.appendChild(input)
-
+    
     document.querySelector('#sidebar .items').appendChild(item)
-
+    
     order.push({
-        item: name.textContent.split('x')[0],
-        price: input.value,
+        item: itemName,
+        price: itemPrice,
         qty: 1
     })
     calcTotal()
@@ -367,8 +446,12 @@ function switchToExpenses() {
     //hide sales cards and show expenses cards
     document.querySelectorAll('.card.sales').forEach(card => card.classList.add('hidden'))
     document.querySelectorAll('.card.expenses').forEach(card => card.classList.remove('hidden'))
-    document.querySelectorAll('.clearOrder.sales').forEach(card => card.classList.add('hidden'))
-    document.querySelectorAll('.clearOrder.expenses').forEach(card => card.classList.remove('hidden'))
+
+    clearSalesButton.classList.add('hidden')
+    clearExpensesButton.classList.remove('hidden')
+
+    customeOrderSalesButton.classList.add('hidden')
+    customeOrderExpensesButton.classList.remove('hidden')
 }
 function switchToSales() {
     clearOrder()
@@ -383,8 +466,12 @@ function switchToSales() {
     //hide expenses cards and show sales cards
     document.querySelectorAll('.card.expenses').forEach(card => card.classList.add('hidden'))
     document.querySelectorAll('.card.sales').forEach(card => card.classList.remove('hidden'))
-    document.querySelectorAll('.clearOrder.expenses').forEach(card => card.classList.add('hidden'))
-    document.querySelectorAll('.clearOrder.sales').forEach(card => card.classList.remove('hidden'))
+
+    clearExpensesButton.classList.add('hidden')
+    clearSalesButton.classList.remove('hidden')
+
+    customeOrderExpensesButton.classList.add('hidden')
+    customeOrderSalesButton.classList.remove('hidden')
 }
 
 
